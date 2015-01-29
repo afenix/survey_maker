@@ -14,10 +14,10 @@ In your spec_helper.rb file, put this:
 ```
 ENV['RACK_ENV'] = 'test'
 
-Dir[File.dirname(__FILE__) + '/../lib/*.rb'].each { |file| require file }
-
 require("bundler/setup")
 Bundler.require(:default, :test)
+
+Dir[File.dirname(__FILE__) + '/../lib/*.rb'].each { |file| require file }
 ```
 
 In your other spec files, enter only this:
@@ -67,7 +67,7 @@ test:
 Now we can move on to setting up our classes! Because classes can inherit in Active Record,
 this is pretty easy. Just set up your class like this:
 ```
-class Survey <ActiveRecord::Base
+class Survey < ActiveRecord::Base
 end
 ```
 
@@ -98,3 +98,19 @@ end
 ###This is very important: make sure you create your table with a plural name. More
 on vital naming conventions here:
 https://www.learnhowtoprogram.com/lessons/active-record-naming-conventions
+
+OK now lets migrate!
+
+In the terminal:
+```
+$ rake db:migrate
+$ rake db:test:prepare
+```
+
+Now in psql go check out your database by connecting to it using \c to make sure
+your test and dev databases are there. Also make sure your table structure is
+properly configured by running this SQL command:
+
+```
+SELECT * FROM surveys;
+```

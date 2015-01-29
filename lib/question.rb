@@ -1,4 +1,3 @@
-class Question <ActiveRecord::Base
-
-
+class Question < ActiveRecord::Base
+  belongs_to(:survey)
 end

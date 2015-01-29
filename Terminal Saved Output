@@ -1,0 +1,338 @@
+Last login: Wed Jan 28 10:11:54 on ttys001
+epicodus-38:survey Guest$ psql
+psql (9.4.0)
+Type "help" for help.
+
+Guest=# \l
+                                 List of databases
+        Name        |  Owner   | Encoding | Collate | Ctype |   Access privileges   
+--------------------+----------+----------+---------+-------+-----------------------
+ Guest              | epicodus | UTF8     | C       | C     | 
+ postgres           | epicodus | UTF8     | C       | C     | 
+ survey_development | Guest    | UTF8     | C       | C     | 
+ survey_test        | Guest    | UTF8     | C       | C     | 
+ template0          | epicodus | UTF8     | C       | C     | =c/epicodus          +
+                    |          |          |         |       | epicodus=CTc/epicodus
+ template1          | epicodus | UTF8     | C       | C     | =c/epicodus          +
+                    |          |          |         |       | epicodus=CTc/epicodus
+(6 rows)
+
+Guest=# \c survey_development
+You are now connected to database "survey_development" as user "Guest".
+survey_development=# \db
+       List of tablespaces
+    Name    |  Owner   | Location 
+------------+----------+----------
+ pg_default | epicodus | 
+ pg_global  | epicodus | 
+(2 rows)
+
+survey_development=# \d
+               List of relations
+ Schema |       Name        |   Type   | Owner 
+--------+-------------------+----------+-------
+ public | schema_migrations | table    | Guest
+ public | surveys           | table    | Guest
+ public | surveys_id_seq    | sequence | Guest
+(3 rows)
+
+survey_development=# SELECT * FROM surveys
+survey_development-# ;
+ id | name | created_at | updated_at 
+----+------+------------+------------
+(0 rows)
+
+survey_development=# /dt surveys;
+ERROR:  syntax error at or near "/"
+LINE 1: /dt surveys;
+        ^
+survey_development=# /dt 
+survey_development-# \dt
+             List of relations
+ Schema |       Name        | Type  | Owner 
+--------+-------------------+-------+-------
+ public | schema_migrations | table | Guest
+ public | surveys           | table | Guest
+(2 rows)
+
+survey_development-# \d surveys;
+                                     Table "public.surveys"
+   Column   |            Type             |                      Modifiers                       
+------------+-----------------------------+------------------------------------------------------
+ id         | integer                     | not null default nextval('surveys_id_seq'::regclass)
+ name       | character varying           | 
+ created_at | timestamp without time zone | 
+ updated_at | timestamp without time zone | 
+Indexes:
+    "surveys_pkey" PRIMARY KEY, btree (id)
+
+survey_development-# \d
+               List of relations
+ Schema |       Name        |   Type   | Owner 
+--------+-------------------+----------+-------
+ public | questions         | table    | Guest
+ public | questions_id_seq  | sequence | Guest
+ public | schema_migrations | table    | Guest
+ public | surveys           | table    | Guest
+ public | surveys_id_seq    | sequence | Guest
+(5 rows)
+
+survey_development-# \d surveys;
+                                     Table "public.surveys"
+   Column   |            Type             |                      Modifiers                       
+------------+-----------------------------+------------------------------------------------------
+ id         | integer                     | not null default nextval('surveys_id_seq'::regclass)
+ name       | character varying           | 
+ created_at | timestamp without time zone | 
+ updated_at | timestamp without time zone | 
+Indexes:
+    "surveys_pkey" PRIMARY KEY, btree (id)
+
+survey_development-# \d questions;
+                                     Table "public.questions"
+   Column   |            Type             |                       Modifiers                        
+------------+-----------------------------+--------------------------------------------------------
+ id         | integer                     | not null default nextval('questions_id_seq'::regclass)
+ question   | character varying           | 
+ created_at | timestamp without time zone | 
+ updated_at | timestamp without time zone | 
+Indexes:
+    "questions_pkey" PRIMARY KEY, btree (id)
+
+survey_development-# SELECT * FROM surveys;
+ERROR:  syntax error at or near "/"
+LINE 1: /dt 
+        ^
+survey_development=# SELECT * FROM surveys;
+ id |         name         |         created_at         |         updated_at         
+----+----------------------+----------------------------+----------------------------
+  1 | Do you like surveys? | 2015-01-28 18:59:14.97175  | 2015-01-28 18:59:14.97175
+  2 | Another survey       | 2015-01-28 19:07:47.920979 | 2015-01-28 19:07:47.920979
+  3 | Another survey       | 2015-01-28 19:08:53.553151 | 2015-01-28 19:08:53.553151
+(3 rows)
+
+survey_development=# \c survey_test
+You are now connected to database "survey_test" as user "Guest".
+survey_test=# \d
+               List of relations
+ Schema |       Name        |   Type   | Owner 
+--------+-------------------+----------+-------
+ public | schema_migrations | table    | Guest
+ public | surveys           | table    | Guest
+ public | surveys_id_seq    | sequence | Guest
+(3 rows)
+
+survey_test=# rake db:test:prepare
+survey_test-# \c guest
+FATAL:  database "guest" does not exist
+Previous connection kept
+survey_test-# \c Guest
+You are now connected to database "Guest" as user "Guest".
+Guest-# \c survey_test
+You are now connected to database "survey_test" as user "Guest".
+survey_test-# \d
+               List of relations
+ Schema |       Name        |   Type   | Owner 
+--------+-------------------+----------+-------
+ public | questions         | table    | Guest
+ public | questions_id_seq  | sequence | Guest
+ public | schema_migrations | table    | Guest
+ public | surveys           | table    | Guest
+ public | surveys_id_seq    | sequence | Guest
+(5 rows)
+
+survey_test-# \dt
+             List of relations
+ Schema |       Name        | Type  | Owner 
+--------+-------------------+-------+-------
+ public | questions         | table | Guest
+ public | schema_migrations | table | Guest
+ public | surveys           | table | Guest
+(3 rows)
+
+survey_test-# \d questions
+                                     Table "public.questions"
+   Column   |            Type             |                       Modifiers                        
+------------+-----------------------------+--------------------------------------------------------
+ id         | integer                     | not null default nextval('questions_id_seq'::regclass)
+ question   | character varying           | 
+ created_at | timestamp without time zone | 
+ updated_at | timestamp without time zone | 
+Indexes:
+    "questions_pkey" PRIMARY KEY, btree (id)
+
+survey_test-# \c survey_development;
+You are now connected to database "survey_development" as user "Guest".
+survey_development-# \d questions
+                                     Table "public.questions"
+   Column   |            Type             |                       Modifiers                        
+------------+-----------------------------+--------------------------------------------------------
+ id         | integer                     | not null default nextval('questions_id_seq'::regclass)
+ question   | character varying           | 
+ created_at | timestamp without time zone | 
+ updated_at | timestamp without time zone | 
+ survey_id  | integer                     | 
+Indexes:
+    "questions_pkey" PRIMARY KEY, btree (id)
+
+survey_development-# \d questions
+                                      Table "public.questions"
+   Column    |            Type             |                       Modifiers                        
+-------------+-----------------------------+--------------------------------------------------------
+ id          | integer                     | not null default nextval('questions_id_seq'::regclass)
+ description | character varying           | 
+ created_at  | timestamp without time zone | 
+ updated_at  | timestamp without time zone | 
+ survey_id   | integer                     | 
+Indexes:
+    "questions_pkey" PRIMARY KEY, btree (id)
+
+survey_development-# SELECT * FROM questions;
+ERROR:  syntax error at or near "rake"
+LINE 1: rake db:test:prepare
+        ^
+survey_development=# SELECT * FROM questions;
+ id |             description             |         created_at         |         updated_at         | survey_id 
+----+-------------------------------------+----------------------------+----------------------------+-----------
+  1 |                                     | 2015-01-28 21:48:47.885974 | 2015-01-28 21:48:47.885974 |          
+  2 | Whats your favorite kind of cat     | 2015-01-28 22:15:58.05566  | 2015-01-28 22:15:58.05566  |          
+  3 | Whats your favorite kind of reptile | 2015-01-28 22:17:45.816931 | 2015-01-28 22:17:45.816931 |          
+  4 | Whos the best?                      | 2015-01-28 22:19:46.634682 | 2015-01-28 22:19:46.634682 |          
+  5 | Is this the only question?          | 2015-01-28 22:51:30.438302 | 2015-01-28 22:51:30.438302 |          
+  6 | Look at this problem?               | 2015-01-28 22:53:58.996479 | 2015-01-28 22:53:58.996479 |          
+  7 | Look at this problem?               | 2015-01-28 22:55:07.846343 | 2015-01-28 22:55:07.846343 |          
+  8 | And now?                            | 2015-01-28 23:02:41.012338 | 2015-01-28 23:02:41.012338 |          
+  9 | What the hell                       | 2015-01-28 23:08:48.193363 | 2015-01-28 23:08:48.193363 |          
+ 10 | WHY                                 | 2015-01-28 23:09:26.803381 | 2015-01-28 23:09:26.803381 |          
+ 11 | Still why                           | 2015-01-28 23:10:52.4392   | 2015-01-28 23:10:52.4392   |          
+ 12 | IDK                                 | 2015-01-28 23:11:46.743976 | 2015-01-28 23:11:46.743976 |          
+ 13 | question?                           | 2015-01-28 23:13:26.690341 | 2015-01-28 23:13:26.690341 |          
+ 14 | hello                               | 2015-01-28 23:16:21.965962 | 2015-01-28 23:16:21.965962 |          
+ 15 | Do you like cheese?                 | 2015-01-28 23:23:00.229801 | 2015-01-28 23:23:00.229801 |          
+ 16 | be nice?                            | 2015-01-28 23:23:33.036045 | 2015-01-28 23:23:33.036045 |          
+(16 rows)
+
+survey_development=# \d questions
+                                      Table "public.questions"
+   Column    |            Type             |                       Modifiers                        
+-------------+-----------------------------+--------------------------------------------------------
+ id          | integer                     | not null default nextval('questions_id_seq'::regclass)
+ description | character varying           | 
+ created_at  | timestamp without time zone | 
+ updated_at  | timestamp without time zone | 
+ survey_id   | integer                     | 
+Indexes:
+    "questions_pkey" PRIMARY KEY, btree (id)
+
+survey_development=# SELECT * FROM questions;
+ id |             description             |         created_at         |         updated_at         | survey_id 
+----+-------------------------------------+----------------------------+----------------------------+-----------
+  1 |                                     | 2015-01-28 21:48:47.885974 | 2015-01-28 21:48:47.885974 |          
+  2 | Whats your favorite kind of cat     | 2015-01-28 22:15:58.05566  | 2015-01-28 22:15:58.05566  |          
+  3 | Whats your favorite kind of reptile | 2015-01-28 22:17:45.816931 | 2015-01-28 22:17:45.816931 |          
+  4 | Whos the best?                      | 2015-01-28 22:19:46.634682 | 2015-01-28 22:19:46.634682 |          
+  5 | Is this the only question?          | 2015-01-28 22:51:30.438302 | 2015-01-28 22:51:30.438302 |          
+  6 | Look at this problem?               | 2015-01-28 22:53:58.996479 | 2015-01-28 22:53:58.996479 |          
+  7 | Look at this problem?               | 2015-01-28 22:55:07.846343 | 2015-01-28 22:55:07.846343 |          
+  8 | And now?                            | 2015-01-28 23:02:41.012338 | 2015-01-28 23:02:41.012338 |          
+  9 | What the hell                       | 2015-01-28 23:08:48.193363 | 2015-01-28 23:08:48.193363 |          
+ 10 | WHY                                 | 2015-01-28 23:09:26.803381 | 2015-01-28 23:09:26.803381 |          
+ 11 | Still why                           | 2015-01-28 23:10:52.4392   | 2015-01-28 23:10:52.4392   |          
+ 12 | IDK                                 | 2015-01-28 23:11:46.743976 | 2015-01-28 23:11:46.743976 |          
+ 13 | question?                           | 2015-01-28 23:13:26.690341 | 2015-01-28 23:13:26.690341 |          
+ 14 | hello                               | 2015-01-28 23:16:21.965962 | 2015-01-28 23:16:21.965962 |          
+ 15 | Do you like cheese?                 | 2015-01-28 23:23:00.229801 | 2015-01-28 23:23:00.229801 |          
+ 16 | be nice?                            | 2015-01-28 23:23:33.036045 | 2015-01-28 23:23:33.036045 |          
+ 17 | Is this working?                    | 2015-01-28 23:31:04.34465  | 2015-01-28 23:31:04.34465  |          
+ 18 | this is a question                  | 2015-01-28 23:32:05.790129 | 2015-01-28 23:32:05.790129 |          
+ 19 | How                                 | 2015-01-28 23:42:42.097783 | 2015-01-28 23:42:42.097783 |         5
+ 20 | Now how                             | 2015-01-28 23:45:35.923367 | 2015-01-28 23:45:35.923367 |         5
+ 21 | Still why                           | 2015-01-28 23:46:13.993228 | 2015-01-28 23:46:13.993228 |         4
+ 22 | Now what happens                    | 2015-01-28 23:47:18.017995 | 2015-01-28 23:47:18.017995 |         4
+(22 rows)
+
+survey_development=# SELECT * FROM questions;
+ id |             description             |         created_at         |         updated_at         | survey_id 
+----+-------------------------------------+----------------------------+----------------------------+-----------
+  1 |                                     | 2015-01-28 21:48:47.885974 | 2015-01-28 21:48:47.885974 |          
+  2 | Whats your favorite kind of cat     | 2015-01-28 22:15:58.05566  | 2015-01-28 22:15:58.05566  |          
+  3 | Whats your favorite kind of reptile | 2015-01-28 22:17:45.816931 | 2015-01-28 22:17:45.816931 |          
+  4 | Whos the best?                      | 2015-01-28 22:19:46.634682 | 2015-01-28 22:19:46.634682 |          
+  5 | Is this the only question?          | 2015-01-28 22:51:30.438302 | 2015-01-28 22:51:30.438302 |          
+  6 | Look at this problem?               | 2015-01-28 22:53:58.996479 | 2015-01-28 22:53:58.996479 |          
+  7 | Look at this problem?               | 2015-01-28 22:55:07.846343 | 2015-01-28 22:55:07.846343 |          
+  8 | And now?                            | 2015-01-28 23:02:41.012338 | 2015-01-28 23:02:41.012338 |          
+  9 | What the hell                       | 2015-01-28 23:08:48.193363 | 2015-01-28 23:08:48.193363 |          
+ 10 | WHY                                 | 2015-01-28 23:09:26.803381 | 2015-01-28 23:09:26.803381 |          
+ 11 | Still why                           | 2015-01-28 23:10:52.4392   | 2015-01-28 23:10:52.4392   |          
+ 12 | IDK                                 | 2015-01-28 23:11:46.743976 | 2015-01-28 23:11:46.743976 |          
+ 13 | question?                           | 2015-01-28 23:13:26.690341 | 2015-01-28 23:13:26.690341 |          
+ 14 | hello                               | 2015-01-28 23:16:21.965962 | 2015-01-28 23:16:21.965962 |          
+ 15 | Do you like cheese?                 | 2015-01-28 23:23:00.229801 | 2015-01-28 23:23:00.229801 |          
+ 16 | be nice?                            | 2015-01-28 23:23:33.036045 | 2015-01-28 23:23:33.036045 |          
+ 17 | Is this working?                    | 2015-01-28 23:31:04.34465  | 2015-01-28 23:31:04.34465  |          
+ 18 | this is a question                  | 2015-01-28 23:32:05.790129 | 2015-01-28 23:32:05.790129 |          
+ 19 | How                                 | 2015-01-28 23:42:42.097783 | 2015-01-28 23:42:42.097783 |         5
+ 20 | Now how                             | 2015-01-28 23:45:35.923367 | 2015-01-28 23:45:35.923367 |         5
+ 21 | Still why                           | 2015-01-28 23:46:13.993228 | 2015-01-28 23:46:13.993228 |         4
+ 22 | Now what happens                    | 2015-01-28 23:47:18.017995 | 2015-01-28 23:47:18.017995 |         4
+ 23 | skjflkds                            | 2015-01-28 23:52:36.204647 | 2015-01-28 23:52:36.204647 |         1
+ 24 | lskf;ldksa                          | 2015-01-28 23:54:28.987017 | 2015-01-28 23:54:28.987017 |         3
+ 25 | Whats your favorite cat             | 2015-01-28 23:56:16.256115 | 2015-01-28 23:56:16.256115 |         6
+ 26 | hi                                  | 2015-01-28 23:57:02.112683 | 2015-01-28 23:57:02.112683 |         6
+ 27 | bla bla                             | 2015-01-29 00:03:41.142822 | 2015-01-29 00:03:41.142822 |         4
+ 28 | do you like rain?                   | 2015-01-29 00:07:14.624148 | 2015-01-29 00:07:14.624148 |         5
+(28 rows)
+
+survey_development=# SELECT * FROM questions;
+ id |       description       |         created_at         |         updated_at         | survey_id 
+----+-------------------------+----------------------------+----------------------------+-----------
+  8 | And now?                | 2015-01-28 23:02:41.012338 | 2015-01-28 23:02:41.012338 |          
+  9 | What the hell           | 2015-01-28 23:08:48.193363 | 2015-01-28 23:08:48.193363 |          
+ 10 | WHY                     | 2015-01-28 23:09:26.803381 | 2015-01-28 23:09:26.803381 |          
+ 11 | Still why               | 2015-01-28 23:10:52.4392   | 2015-01-28 23:10:52.4392   |          
+ 12 | IDK                     | 2015-01-28 23:11:46.743976 | 2015-01-28 23:11:46.743976 |          
+ 13 | question?               | 2015-01-28 23:13:26.690341 | 2015-01-28 23:13:26.690341 |          
+ 14 | hello                   | 2015-01-28 23:16:21.965962 | 2015-01-28 23:16:21.965962 |          
+ 15 | Do you like cheese?     | 2015-01-28 23:23:00.229801 | 2015-01-28 23:23:00.229801 |          
+ 16 | be nice?                | 2015-01-28 23:23:33.036045 | 2015-01-28 23:23:33.036045 |          
+ 17 | Is this working?        | 2015-01-28 23:31:04.34465  | 2015-01-28 23:31:04.34465  |          
+ 18 | this is a question      | 2015-01-28 23:32:05.790129 | 2015-01-28 23:32:05.790129 |          
+ 19 | How                     | 2015-01-28 23:42:42.097783 | 2015-01-28 23:42:42.097783 |         5
+ 20 | Now how                 | 2015-01-28 23:45:35.923367 | 2015-01-28 23:45:35.923367 |         5
+ 21 | Still why               | 2015-01-28 23:46:13.993228 | 2015-01-28 23:46:13.993228 |         4
+ 22 | Now what happens        | 2015-01-28 23:47:18.017995 | 2015-01-28 23:47:18.017995 |         4
+ 23 | skjflkds                | 2015-01-28 23:52:36.204647 | 2015-01-28 23:52:36.204647 |         1
+ 24 | lskf;ldksa              | 2015-01-28 23:54:28.987017 | 2015-01-28 23:54:28.987017 |         3
+ 25 | Whats your favorite cat | 2015-01-28 23:56:16.256115 | 2015-01-28 23:56:16.256115 |         6
+ 26 | hi                      | 2015-01-28 23:57:02.112683 | 2015-01-28 23:57:02.112683 |         6
+ 27 | bla bla                 | 2015-01-29 00:03:41.142822 | 2015-01-29 00:03:41.142822 |         4
+ 28 | do you like rain?       | 2015-01-29 00:07:14.624148 | 2015-01-29 00:07:14.624148 |         5
+(21 rows)
+
+survey_development=# SELECT * FROM questions;
+ id |       description       |         created_at         |         updated_at         | survey_id 
+----+-------------------------+----------------------------+----------------------------+-----------
+  9 | What the hell           | 2015-01-28 23:08:48.193363 | 2015-01-28 23:08:48.193363 |          
+ 10 | WHY                     | 2015-01-28 23:09:26.803381 | 2015-01-28 23:09:26.803381 |          
+ 11 | Still why               | 2015-01-28 23:10:52.4392   | 2015-01-28 23:10:52.4392   |          
+ 12 | IDK                     | 2015-01-28 23:11:46.743976 | 2015-01-28 23:11:46.743976 |          
+ 13 | question?               | 2015-01-28 23:13:26.690341 | 2015-01-28 23:13:26.690341 |          
+ 14 | hello                   | 2015-01-28 23:16:21.965962 | 2015-01-28 23:16:21.965962 |          
+ 15 | Do you like cheese?     | 2015-01-28 23:23:00.229801 | 2015-01-28 23:23:00.229801 |          
+ 16 | be nice?                | 2015-01-28 23:23:33.036045 | 2015-01-28 23:23:33.036045 |          
+ 17 | Is this working?        | 2015-01-28 23:31:04.34465  | 2015-01-28 23:31:04.34465  |          
+ 18 | this is a question      | 2015-01-28 23:32:05.790129 | 2015-01-28 23:32:05.790129 |          
+ 19 | How                     | 2015-01-28 23:42:42.097783 | 2015-01-28 23:42:42.097783 |         5
+ 20 | Now how                 | 2015-01-28 23:45:35.923367 | 2015-01-28 23:45:35.923367 |         5
+ 21 | Still why               | 2015-01-28 23:46:13.993228 | 2015-01-28 23:46:13.993228 |         4
+ 22 | Now what happens        | 2015-01-28 23:47:18.017995 | 2015-01-28 23:47:18.017995 |         4
+ 23 | skjflkds                | 2015-01-28 23:52:36.204647 | 2015-01-28 23:52:36.204647 |         1
+ 24 | lskf;ldksa              | 2015-01-28 23:54:28.987017 | 2015-01-28 23:54:28.987017 |         3
+ 25 | Whats your favorite cat | 2015-01-28 23:56:16.256115 | 2015-01-28 23:56:16.256115 |         6
+ 26 | hi                      | 2015-01-28 23:57:02.112683 | 2015-01-28 23:57:02.112683 |         6
+ 27 | bla bla                 | 2015-01-29 00:03:41.142822 | 2015-01-29 00:03:41.142822 |         4
+ 28 | do you like rain?       | 2015-01-29 00:07:14.624148 | 2015-01-29 00:07:14.624148 |         5
+(20 rows)
+
+survey_development=# 

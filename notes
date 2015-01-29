@@ -1,0 +1,13 @@
+
+% if @questions.any?() %>
+<p>Here are your questions</p>
+<ul>
+  <% @questions.each() do |question| %>
+  <li><%= question.id() %></li>
+  <% end %>
+  <% else %>
+  <p>There aren't any questions</p>
+</ul>
+<% end %>
+
+name = Survey.find(params.fetch("name"))
